@@ -1,7 +1,6 @@
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
+from pydantic import Field, ValidationError, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-import os
 
 
 class Settings(BaseSettings):
@@ -11,12 +10,19 @@ class Settings(BaseSettings):
     APP_ENV: str = Field(..., description="Application Environment")
     DATABASE_URL: str = Field(..., description="Database Connection URL")
 
+    @field_validator("APP_NAME", "APP_ENV", "DATABASE_URL", mode="before")
+    @classmethod
+    def non_empty(cls, v: str, info) -> str:
+        if not v or v.strip() == "":
+            raise ValueError(f"Field '{info.field_name}' cannot be empty")
+        return v
+
     @classmethod
     def load(cls):
         try:
             return cls()
-        except ValueError as e:
-            raise RuntimeError(f"Missing required environment variables: {e}")
+        except ValidationError as e:
+            raise RuntimeError(f"Invalid or missing environment variables: {e}")
 
 
 settings = Settings.load()
