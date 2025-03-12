@@ -1,19 +1,18 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
+# Use the official lightweight Python image
+FROM python:3.12-slim
 
-
-COPY ./requirements.txt /app/requirements.txt
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r /app/requirements.txt
-
-COPY ./src /app/src
-
-COPY ./appsettings.yaml /app/appsettings.yaml
-
-ENV PYTHONPATH=/app
-
-EXPOSE 8000
-
+# Set the working directory
 WORKDIR /app
 
-# sleep to wait until the database is ready
-CMD sleep 5 && python src/main.py
+# Copy and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the application code
+COPY . .
+
+# Expose the port FastAPI runs on
+EXPOSE 8000
+
+# Command to run FastAPI with Uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
