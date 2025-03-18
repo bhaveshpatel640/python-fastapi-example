@@ -1,18 +1,29 @@
-# Use the official lightweight Python image
-FROM python:3.12-slim
+# Use the official Python image as the base image
+FROM public.ecr.aws/docker/library/python:3.9-slim
 
-# Set the working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy and install dependencies
-COPY requirements.txt .
+# Install system dependencies and create a non-root user
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    useradd --create-home appuser
+
+# Switch to the non-root user
+USER appuser
+
+# Copy only the requirements file to leverage Docker's cache
+COPY requirements.txt ./
+
+# Install application dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code
+# Copy the rest of the application code
 COPY . .
 
-# Expose the port FastAPI runs on
+# Expose the application port
 EXPOSE 8000
 
-# Command to run FastAPI with Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Command to run the application
+CMD ["uvicorn", "app:app", "--port", "8000", "--host", "0.0.0.0"]
