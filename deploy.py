@@ -5,7 +5,7 @@ from truefoundry.deploy import Service, Build, DockerFileBuild, PythonBuild, Por
 logging.basicConfig(level=logging.INFO)
 
 service = Service(
-  name="test-repo-package",
+  name="test-repo-dockerfile-issue",
 
   # --- Build configuration i.e. How to package and build source code ---
   # This will instruct TrueFoundry to automatically generate the Dockerfile and build it
@@ -24,7 +24,7 @@ service = Service(
   ports=[
     Port(
       port=8000,
-      host="test-repo-package-devtest-aws-bhavesh-ws-8000.tfy-usea1-ctl.devtest.truefoundry.tech",
+      host="test-repo-dockerfile-issue-aws-bhavesh-ws-8000.tfy-usea1-ctl.devtest.truefoundry.tech",
     )
   ],
 
