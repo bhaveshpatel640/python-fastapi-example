@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Switch to the non-root user
 USER appuser
 
+ENV PATH="/home/appuser/.local/bin:${PATH}"
+
 # Copy only the requirements file to leverage Docker's cache
 COPY requirements.txt ./
 
@@ -26,4 +28,4 @@ COPY . .
 EXPOSE 8000
 
 # Command to run the application
-CMD ["uvicorn", "app:app", "--port", "8000", "--host", "0.0.0.0"]
+CMD ["uvicorn", "main:app", "--port", "8000", "--host", "0.0.0.0"]

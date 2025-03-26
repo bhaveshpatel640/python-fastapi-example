@@ -12,7 +12,7 @@ service = Service(
   image=Build(
     build_spec=DockerFileBuild(
       dockerfile_path="./Dockerfile",
-      command="uvicorn app:app --port 8000 --host 0.0.0.0",
+      command="uvicorn main:app --port 8000 --host 0.0.0.0",
     )
     # You can use PythonBuild or DockerFileBuild for build spec like follows:
     # build_spec=PythonBuild() or build_spec=DockerFileBuild()
